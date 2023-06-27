@@ -62,7 +62,9 @@ const CreateLink = () => {
             placeholder='The URL for the link'
           />
         </div>
-        <button type='submit'>Submit</button>
+        <button type='submit' className='button'>
+          Submit
+        </button>
       </form>
     </div>
   );

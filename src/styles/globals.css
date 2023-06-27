@@ -13,12 +13,6 @@ header {
   justify-content: center;
   gap: 1rem;
 }
-main {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  height: calc(99vh - 48px);
-}
 
 input {
   max-width: 500px;

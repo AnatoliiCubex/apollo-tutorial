@@ -1,6 +1,7 @@
 import type { AppProps } from "next/app";
 import { Inter } from "next/font/google";
-import Link from "next/link";
+import Head from "next/head";
+
 import {
   ApolloProvider,
   ApolloClient,
@@ -8,6 +9,7 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 
+import Header from "@/components/Header";
 import "@/styles/globals.css";
 
 const httpLink = createHttpLink({
@@ -24,11 +26,14 @@ const inter = Inter({ subsets: ["latin"] });
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
-      <header>
-        <Link href={"/"}>Links</Link>
-        <Link href={"/create-link"}>Create link form</Link>
-      </header>
-      <main className={`${inter.className} mt3`}>
+      <Head>
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <title>Create Next App</title>
+      </Head>
+
+      <Header />
+
+      <main className={`${inter.className} w85 center ph3 pv1 background-gray`}>
         <Component {...pageProps} />
       </main>
     </ApolloProvider>
