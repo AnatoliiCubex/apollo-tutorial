@@ -1,4 +1,6 @@
 import type { AppProps } from "next/app";
+import { Inter } from "next/font/google";
+import Link from "next/link";
 import {
   ApolloProvider,
   ApolloClient,
@@ -17,10 +19,18 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const inter = Inter({ subsets: ["latin"] });
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
-      <Component {...pageProps} />
+      <header>
+        <Link href={"/"}>Links</Link>
+        <Link href={"/create-link"}>Create link form</Link>
+      </header>
+      <main className={`${inter.className} mt3`}>
+        <Component {...pageProps} />
+      </main>
     </ApolloProvider>
   );
 }
