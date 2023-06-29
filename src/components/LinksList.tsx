@@ -1,11 +1,14 @@
 import React from "react";
+import { useRouter } from "next/router";
 import { useQuery, gql } from "@apollo/client";
+import { getLinksToRender, getQueryVariables } from "@/utils/linksListPage";
 
 import LinkItem from "./LinkItem";
+import { LINKS_PER_PAGE } from "@/constants";
 
 export const FEED_QUERY = gql`
-  {
-    feed {
+  query FeedQuery($take: Int, $skip: Int, $orderBy: LinkOrderByInput) {
+    feed(take: $take, skip: $skip, orderBy: $orderBy) {
       id
       links {
         id
@@ -23,6 +26,7 @@ export const FEED_QUERY = gql`
           }
         }
       }
+      count
     }
   }
 `;
@@ -99,11 +103,20 @@ export type Feed = {
     id: string;
     links: Link[];
     __typename: string;
+    count: number;
   };
 };
 
 const LinksList = () => {
-  const { data, loading, error, subscribeToMore } = useQuery<Feed>(FEED_QUERY);
+  const router = useRouter();
+  const isNewPage = router.pathname.includes("new");
+  const page = Number(router.query.page);
+  const pageIndex = page ? (page - 1) * LINKS_PER_PAGE : 0;
+
+  const { data, loading, error, subscribeToMore } = useQuery<Feed>(FEED_QUERY, {
+    variables: getQueryVariables(isNewPage, page),
+  });
+
   subscribeToMore({
     document: NEW_LINKS_SUBSCRIPTION,
     updateQuery: (prev, { subscriptionData }) => {
@@ -127,15 +140,44 @@ const LinksList = () => {
   });
 
   return (
-    <div>
-      {data && (
-        <>
-          {data.feed.links.map((link, i) => (
-            <LinkItem key={link.id} link={link} index={i} />
-          ))}
-        </>
-      )}
-    </div>
+    <>
+      {loading && <p>Loading...</p>}
+      {error && <pre>{JSON.stringify(error, null, 2)}</pre>}
+      <div>
+        {data && (
+          <>
+            {getLinksToRender(isNewPage, data).map((link, index) => (
+              <LinkItem key={link.id} link={link} index={index + pageIndex} />
+            ))}
+            {isNewPage && (
+              <div className='flex ml4 mv3 gray'>
+                <div
+                  className='pointer mr2'
+                  onClick={() => {
+                    if (page > 1) {
+                      router.push(`/new/${page - 1}`);
+                    }
+                  }}
+                >
+                  Previous
+                </div>
+                <div
+                  className='pointer'
+                  onClick={() => {
+                    if (page <= data.feed.count / LINKS_PER_PAGE) {
+                      const nextPage = page + 1;
+                      router.push(`/new/${nextPage}`);
+                    }
+                  }}
+                >
+                  Next
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

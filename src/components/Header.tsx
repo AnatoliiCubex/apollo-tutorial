@@ -27,6 +27,10 @@ const Header = () => {
         <Link href='/search' className='ml1 no-underline black'>
           Search
         </Link>
+        <div className='ml1'>|</div>
+        <Link href='/new/1' className='ml1 no-underline black'>
+          New
+        </Link>
         {authToken && (
           <div className='flex'>
             <div className='ml1'>|</div>
