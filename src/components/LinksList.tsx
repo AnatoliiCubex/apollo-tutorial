@@ -3,7 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 
 import LinkItem from "./LinkItem";
 
-const FEED_QUERY = gql`
+export const FEED_QUERY = gql`
   {
     feed {
       id
@@ -12,21 +12,43 @@ const FEED_QUERY = gql`
         createdAt
         url
         description
+        postedBy {
+          id
+          name
+        }
+        votes {
+          id
+          user {
+            id
+          }
+        }
       }
     }
   }
 `;
 
-type Feed = {
+export type Link = {
+  createdAt: string;
+  description: string;
+  id: string;
+  url: string;
+  __typename: string;
+  postedBy: {
+    id: string;
+    name: string;
+  };
+  votes: {
+    id: string;
+    user: {
+      id: string;
+    };
+  }[];
+};
+
+export type Feed = {
   feed: {
     id: string;
-    links: {
-      createdAt: string;
-      description: string;
-      id: string;
-      url: string;
-      __typename: string;
-    }[];
+    links: Link[];
     __typename: string;
   };
 };
@@ -38,12 +60,8 @@ const LinksList = () => {
     <div>
       {data && (
         <>
-          {data.feed.links.map((link) => (
-            <LinkItem
-              key={link.id}
-              description={link.description}
-              url={link.url}
-            />
+          {data.feed.links.map((link, i) => (
+            <LinkItem key={link.id} link={link} index={i} />
           ))}
         </>
       )}
