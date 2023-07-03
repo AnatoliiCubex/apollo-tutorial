@@ -2,7 +2,6 @@ import { Feed } from "@/components/LinksList";
 import { LINKS_PER_PAGE } from "@/constants";
 
 export const getQueryVariables = (isNewPage: boolean, page: number) => {
-  // console.log(page);
   const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0;
   const take = isNewPage ? LINKS_PER_PAGE : 100;
   const orderBy = { createdAt: "desc" };

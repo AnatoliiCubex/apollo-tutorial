@@ -46,10 +46,11 @@ const Search = () => {
           OK
         </button>
       </div>
-      {data &&
-        data.feed.links.map((link, index) => (
-          <LinkItem key={link.id} link={link} index={index} />
-        ))}
+      {data
+        ? data.feed.links.map((link, index) => (
+            <LinkItem key={link.id} link={link} index={index} />
+          ))
+        : null}
     </>
   );
 };
